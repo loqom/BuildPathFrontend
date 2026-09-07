@@ -1,0 +1,6 @@
+{
+  "name": "BuildPath",
+  "description": "Find Real Problems. Build Real Projects. Scrape, match, and orchestrate engineering projects based on your tech stack and interests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
