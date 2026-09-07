@@ -21,7 +21,7 @@ export const authService = {
     const response = await api.post('/auth/logout');
     return response.data;
   },
-  updateProfile: async (data: { firstName?: string; lastName?: string; githubHandle?: string; linkedin?: string; bio?: string; techStack?: string[]; skillLevel?: string; goal?: string }) => {
+  updateProfile: async (data: { firstName?: string; lastName?: string; githubHandle?: string; linkedin?: string; bio?: string; techStack?: string[]; skillLevel?: string; goal?: string; avatar?: string }) => {
     const response = await api.put('/auth/profile', data);
     return response.data;
   },

@@ -1219,11 +1219,12 @@ const DangerZone = ({
 
 interface UserProfilePageProps {
   setActiveTab?: (tab: string) => void;
+  onLogout?: () => void;
 }
 
 export const UserProfilePage: React.FC<
   UserProfilePageProps
-> = ({ setActiveTab }) => {
+> = ({ setActiveTab, onLogout }) => {
 
   const navigate = (path: string) => {
     if (setActiveTab) {
@@ -1381,6 +1382,21 @@ export const UserProfilePage: React.FC<
     const fetchProfile =
       async () => {
 
+        let stored: any = null;
+        try {
+          stored = JSON.parse(localStorage.getItem('buildpath_user_profile') || 'null');
+        } catch {
+          // ignore
+        }
+        if (!stored?.isLoggedIn) {
+          if (onLogout) {
+            onLogout();
+          } else {
+            navigate('/');
+          }
+          return;
+        }
+
         try {
 
           const res =
@@ -1442,12 +1458,19 @@ export const UserProfilePage: React.FC<
             );
           }
 
-        } catch (error) {
+        } catch (error: any) {
 
           console.error(
             'Failed to fetch profile',
             error
           );
+          if (error?.response?.status === 400 || error?.response?.status === 401) {
+            if (onLogout) {
+              onLogout();
+            } else {
+              navigate('/');
+            }
+          }
 
         }
 
@@ -1464,6 +1487,16 @@ export const UserProfilePage: React.FC<
   useEffect(() => {
 
     if (isEditMode) {
+      return;
+    }
+
+    let stored: any = null;
+    try {
+      stored = JSON.parse(localStorage.getItem('buildpath_user_profile') || 'null');
+    } catch {
+      // ignore
+    }
+    if (!stored?.isLoggedIn) {
       return;
     }
 
@@ -1738,7 +1771,17 @@ export const UserProfilePage: React.FC<
 
         if (res.success) {
 
-          navigate('/');
+          try {
+            localStorage.removeItem('buildpath_user_profile');
+          } catch {
+            // ignore
+          }
+
+          if (onLogout) {
+            onLogout();
+          } else {
+            navigate('/');
+          }
 
         } else {
 
@@ -1782,7 +1825,11 @@ export const UserProfilePage: React.FC<
             // ignore
           }
 
-          navigate('/');
+          if (onLogout) {
+            onLogout();
+          } else {
+            navigate('/');
+          }
 
         } else {
 
@@ -1796,12 +1843,19 @@ export const UserProfilePage: React.FC<
 
       } catch (error: any) {
 
-        showToast(
-          error.response?.data
-            ?.message ||
-            'Failed to logout',
-          'error'
-        );
+        // Even if the logout API fails or session is already expired/cleared,
+        // clear local auth state and navigate out
+        try {
+          localStorage.removeItem('buildpath_user_profile');
+        } catch {
+          // ignore
+        }
+
+        if (onLogout) {
+          onLogout();
+        } else {
+          navigate('/');
+        }
 
       }
     };

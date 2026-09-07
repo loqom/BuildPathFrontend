@@ -291,6 +291,19 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
+  const handleLogout = () => {
+    setUserProfile({ ...DEFAULT_PROFILE, isLoggedIn: false });
+    try {
+      localStorage.removeItem('buildpath_user_profile');
+    } catch {
+      // ignore
+    }
+    setSavedProjects([]);
+    setSavedProjectIds([]);
+    setActiveTab('home');
+    setIsAuthModalOpen(true);
+  };
+
   const handleSelectProblem = (problem: ProblemItem) => {
     setSelectedProject(toProjectFromProblemItem(problem));
     setActiveTab('roadmap');
@@ -517,7 +530,25 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
         )}
 
         {activeTab === 'profile' && (
-          <UserProfilePage setActiveTab={setActiveTab} />
+          userProfile.isLoggedIn ? (
+            <UserProfilePage setActiveTab={setActiveTab} onLogout={handleLogout} />
+          ) : (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+              <h2 className="text-xl font-bold tracking-wider uppercase mb-2">Authentication Required</h2>
+              <p className="text-white/60 text-sm mb-6 max-w-md">
+                You must be logged in to view and manage your developer profile.
+              </p>
+              <button
+                onClick={() => {
+                  setActiveTab('home');
+                  setIsAuthModalOpen(true);
+                }}
+                className="bg-[#dc0028] text-white px-6 py-2.5 text-xs font-black tracking-[0.2em] uppercase hover:bg-red-700 transition rounded-full"
+              >
+                Sign In to BuildPath
+              </button>
+            </div>
+          )
         )}
       </main>
 

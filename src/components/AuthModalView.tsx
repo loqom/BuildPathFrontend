@@ -154,10 +154,22 @@ export const AuthModalView: React.FC<AuthModalViewProps> = ({
     setIsLoading(true);
     try {
       await authService.logout();
+      try {
+        localStorage.removeItem('buildpath_user_profile');
+      } catch {
+        // ignore
+      }
       setUserProfile((prev) => ({ ...prev, isLoggedIn: false }));
       onClose();
     } catch (err) {
       console.error('Logout failed:', err);
+      try {
+        localStorage.removeItem('buildpath_user_profile');
+      } catch {
+        // ignore
+      }
+      setUserProfile((prev) => ({ ...prev, isLoggedIn: false }));
+      onClose();
     } finally {
       setIsLoading(false);
     }
