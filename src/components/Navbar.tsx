@@ -1,5 +1,6 @@
 import React from 'react';
 import { PageTab, UserProfile } from '../types';
+import { BuildPathLogo } from './BuildPathLogo';
 
 interface NavbarProps {
   activeTab: PageTab;
@@ -7,6 +8,8 @@ interface NavbarProps {
   userProfile: UserProfile;
   openAuthModal?: () => void;
   problemsCount?: number;
+  matchesCount?: number;
+  hasMatches?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,13 +29,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-logo-btn"
             onClick={() => setActiveTab('home')}
-            className="flex items-center gap-3 text-left transition hover:opacity-90 focus:outline-none"
+            className="flex items-center gap-3 text-left transition hover:opacity-90 focus:outline-none group cursor-pointer"
           >
-            <div className="flex h-8 w-8 items-center justify-center bg-[#dc0028] font-black text-white text-xs tracking-wider rounded-lg">
-              BP
-            </div>
+            <BuildPathLogo size="md" withGlow={true} />
             <div>
-              <span className="text-sm font-black tracking-widest uppercase text-white">
+              <span className="text-sm font-black tracking-widest uppercase text-white font-mono">
                 BUILDPATH <span className="text-[#dc0028]">/ ENGINE</span>
               </span>
             </div>
@@ -51,6 +52,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Center Nav Items */}
         <nav className="hidden md:flex items-center gap-6 text-[10px] font-bold tracking-[0.2em] uppercase">
+          <button
+            id="nav-about-btn"
+            onClick={() => setActiveTab('about')}
+            className={`transition py-1 border-b-2 ${
+              activeTab === 'about'
+                ? 'text-white border-[#dc0028] opacity-100'
+                : 'text-white/60 border-transparent hover:text-white'
+            }`}
+          >
+            About
+          </button>
+
           <button
             id="nav-explore-btn"
             onClick={() => setActiveTab('explore')}
@@ -160,8 +173,14 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex md:hidden overflow-x-auto border-t border-white/10 bg-[#0a0a0a] px-3 py-2 no-scrollbar text-[10px] font-bold tracking-[0.15em] uppercase">
         <div className="flex items-center gap-4 min-w-max">
           <button
+            onClick={() => setActiveTab('about')}
+            className={`py-1 ${activeTab === 'about' ? 'text-[#dc0028] border-b border-[#dc0028]' : 'text-white/60'}`}
+          >
+            About
+          </button>
+          <button
             onClick={() => setActiveTab('explore')}
-            className={`py-1 ${activeTab === 'explore' ? 'text-[#0057ff] border-b border-[#0057ff]' : 'text-white/60'}`}
+            className={`py-1 ${activeTab === 'explore' ? 'text-[#dc0028] border-b border-[#dc0028]' : 'text-white/60'}`}
           >
             Explore
           </button>

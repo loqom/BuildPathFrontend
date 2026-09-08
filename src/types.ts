@@ -1,5 +1,6 @@
 export type PageTab = 
   | 'home' 
+  | 'about'
   | 'onboarding' 
   | 'pipeline' 
   | 'match-results' 

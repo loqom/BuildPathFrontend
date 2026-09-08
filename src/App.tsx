@@ -13,6 +13,8 @@ import { TeamsView } from './components/TeamsView';
 import { SavedProjectsView } from './components/SavedProjectsView';
 import { UserProfilePage } from './components/UserProfilePage';
 import { AuthPageView } from './components/AuthPageView';
+import { AboutPageView } from './components/AboutPageView';
+import { BuildPathLogo } from './components/BuildPathLogo';
 import { Footer } from './components/Footer';
 import { problemService } from './services/problem.service';
 import { teamsService } from './services/teams.service';
@@ -444,9 +446,7 @@ export default function App() {
         />
         <div className="relative z-10 flex flex-col items-center text-center space-y-5">
           <div className="relative">
-            <div className="flex h-14 w-14 items-center justify-center bg-[#dc0028] text-white font-black text-xl tracking-wider rounded-2xl shadow-xl shadow-red-900/50">
-              BP
-            </div>
+            <BuildPathLogo size="xl" withGlow={true} className="!w-16 !h-16 shadow-2xl shadow-red-900/60" />
             <div className="absolute -inset-2 border border-[#dc0028]/40 rounded-3xl animate-ping opacity-40 pointer-events-none" />
           </div>
 
@@ -497,6 +497,10 @@ export default function App() {
             featuredProblems={problems.slice(0, 6)}
             onSelectProblem={handleSelectProblem}
           />
+        )}
+
+        {activeTab === 'about' && (
+          <AboutPageView setActiveTab={setActiveTab} />
         )}
 
         {activeTab === 'onboarding' && (

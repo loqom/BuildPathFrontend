@@ -1,5 +1,6 @@
 import React from 'react';
 import { PageTab } from '../types';
+import { BuildPathLogo } from './BuildPathLogo';
 
 interface FooterProps {
   setActiveTab: (tab: PageTab) => void;
@@ -7,19 +8,19 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   return (
-    <footer className="border-t border-white/10 bg-[#0a0a0a] text-white/70">
+    <footer className="border-t border-white/10 bg-[#070709] text-white/70">
       {/* Initiation Action Banner */}
       <div className="border-b border-white/10 px-4 py-8 sm:px-8 bg-white/[0.02]">
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-mono uppercase text-[#0057ff] font-bold">READY TO BUILD?</span>
-            <h3 className="text-lg font-black uppercase text-white tracking-tight mt-0.5">
+            <span className="text-xs font-mono uppercase text-[#dc0028] font-bold">READY TO BUILD?</span>
+            <h3 className="text-lg font-black uppercase text-white tracking-tight mt-0.5 font-sans">
               Input your tech stack & discover real projects
             </h3>
           </div>
           <button
             onClick={() => setActiveTab('onboarding')}
-            className="px-8 py-3.5 bg-[#0057ff] text-white hover:bg-[#0046d5] transition text-xs font-black tracking-[0.25em] uppercase rounded-full shadow-lg"
+            className="px-8 py-3.5 bg-[#dc0028] text-white hover:bg-[#b00020] transition text-xs font-black tracking-[0.25em] uppercase rounded-full shadow-xl shadow-red-950/50 cursor-pointer"
           >
             LAUNCH AI MATCHER →
           </button>
@@ -31,12 +32,10 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Brand Info */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex h-7 w-7 items-center justify-center bg-[#0057ff] font-black text-white text-xs">
-                BP
-              </div>
-              <span className="text-base font-black tracking-wider uppercase text-white">
-                BUILDPATH
+            <div className="flex items-center gap-3 mb-3">
+              <BuildPathLogo size="sm" withGlow={true} />
+              <span className="text-base font-black tracking-wider uppercase text-white font-mono">
+                BUILDPATH <span className="text-[#dc0028]">/ ENGINE</span>
               </span>
             </div>
             <p className="text-xs text-white/60 leading-relaxed mb-4">
@@ -53,23 +52,66 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-white/40 mb-3">PLATFORM DIRECTIVES</h4>
             <ul className="space-y-2 text-xs font-bold tracking-wider uppercase">
               <li>
-                <button onClick={() => setActiveTab('explore')} className="hover:text-[#0057ff] transition">
-                  Explore Problems
+                <button
+                  id="footer-about-btn"
+                  onClick={() => {
+                    setActiveTab('about');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
+                  About BuildPath
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('pipeline')} className="hover:text-[#0057ff] transition">
-                  AI Matching Engine
+                <button
+                  id="footer-how-it-works-btn"
+                  onClick={() => {
+                    setActiveTab('home');
+                    setTimeout(() => {
+                      const el = document.getElementById('how-buildpath-works');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
+                  How It Works
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('submit-problem')} className="hover:text-[#0057ff] transition">
-                  Submit Real Problem
+                <button
+                  id="footer-explore-btn"
+                  onClick={() => {
+                    setActiveTab('explore');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
+                  Explore Directory
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('saved-projects')} className="hover:text-[#0057ff] transition">
-                  Active Roadmaps
+                <button
+                  id="footer-pipeline-btn"
+                  onClick={() => {
+                    setActiveTab('pipeline');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
+                  AI Pipeline
+                </button>
+              </li>
+              <li>
+                <button
+                  id="footer-saved-projects-btn"
+                  onClick={() => {
+                    setActiveTab('saved-projects');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
+                  My Projects
                 </button>
               </li>
             </ul>
@@ -80,17 +122,34 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-white/40 mb-3">NETWORK PROTOCOLS</h4>
             <ul className="space-y-2 text-xs font-bold tracking-wider uppercase">
               <li>
-                <button onClick={() => setActiveTab('build-in-public')} className="hover:text-[#0057ff] transition">
+                <button
+                  onClick={() => {
+                    setActiveTab('build-in-public');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
                   Build in Public Feed
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('teams')} className="hover:text-[#0057ff] transition">
+                <button
+                  onClick={() => {
+                    setActiveTab('teams');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="hover:text-[#ff4455] transition text-left cursor-pointer"
+                >
                   Teammate Directory
                 </button>
               </li>
               <li>
-                <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-[#0057ff] transition">
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#ff4455] transition"
+                >
                   GitHub Organization
                 </a>
               </li>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { PageTab, ProblemItem } from '../types';
+import { HowBuildPathWorks } from './HowBuildPathWorks';
 
 interface HeroLandingViewProps {
   setActiveTab: (tab: PageTab) => void;
@@ -37,14 +38,11 @@ export const HeroLandingView: React.FC<HeroLandingViewProps> = ({
       <div className="relative z-10 mx-auto max-w-6xl px-4 pt-12 pb-16 sm:px-8">
         {/* Top Floating Badge Bar */}
         <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-10">
-          
-
-          
         </div>
 
         {/* Main Hero Center Content */}
         <div className="text-center max-w-4xl mx-auto space-y-8 py-4">
-          <h1 className="text-[40px] sm:text-[68px] md:text-[80px] leading-[0.95] font-black uppercase tracking-tighter text-white drop-shadow-2xl">
+          <h1 className="text-[40px] sm:text-[68px] md:text-[80px] leading-[0.95] font-black uppercase tracking-tighter text-white drop-shadow-2xl font-sans">
             FIND REAL PROBLEMS.<br/>
             BUILD REAL<br/>
             <span className="text-white decoration-white/40 decoration-wavy decoration-2">PROJECTS</span>
@@ -59,7 +57,7 @@ export const HeroLandingView: React.FC<HeroLandingViewProps> = ({
             <button
               id="hero-find-project-btn"
               onClick={() => setActiveTab('onboarding')}
-              className="bg-white text-black px-8 py-3.5 text-xs font-black tracking-widest uppercase hover:bg-slate-100 transition shadow-xl rounded-full w-full sm:w-auto active:scale-95"
+              className="bg-white text-black px-8 py-3.5 text-xs font-black tracking-widest uppercase hover:bg-slate-100 transition shadow-xl rounded-full w-full sm:w-auto active:scale-95 cursor-pointer"
             >
               Execute AI Match
             </button>
@@ -67,7 +65,7 @@ export const HeroLandingView: React.FC<HeroLandingViewProps> = ({
             <button
               id="hero-explore-problems-btn"
               onClick={() => setActiveTab('explore')}
-              className="border border-white/40 bg-black/40 backdrop-blur-md text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase hover:bg-black/60 hover:border-white transition rounded-full w-full sm:w-auto"
+              className="border border-white/40 bg-black/40 backdrop-blur-md text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase hover:bg-black/60 hover:border-white transition rounded-full w-full sm:w-auto cursor-pointer"
             >
               Explore Directory
             </button>
@@ -98,6 +96,9 @@ export const HeroLandingView: React.FC<HeroLandingViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* NEW: HOW BUILDPATH WORKS (3D Interactive Workflow Section) */}
+      <HowBuildPathWorks setActiveTab={setActiveTab} />
 
       {/* Secondary Dark Section with Clean Non-overlapping Boundary */}
       <div className="bg-[#0a0a0a] text-white pt-16 pb-20 border-t border-white/10">

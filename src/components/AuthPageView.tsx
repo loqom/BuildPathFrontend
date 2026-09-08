@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, SkillLevel, Goal } from '../types';
 import { authService } from '../services/auth.service';
+import { BuildPathLogo } from './BuildPathLogo';
 
 interface AuthPageViewProps {
   userProfile: UserProfile;
@@ -341,9 +342,7 @@ export const AuthPageView: React.FC<AuthPageViewProps> = ({
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center bg-[#dc0028] font-black text-white text-xs tracking-wider rounded-lg shadow-lg shadow-red-900/40">
-                BP
-              </div>
+              <BuildPathLogo size="md" withGlow={true} />
               <div>
                 <span className="text-sm font-black tracking-widest uppercase text-white font-mono">
                   BUILDPATH <span className="text-[#dc0028]">/ ENGINE</span>
@@ -761,9 +760,7 @@ export const AuthPageView: React.FC<AuthPageViewProps> = ({
             }}
           >
             <div className="relative mb-3">
-              <div className="h-16 w-16 rounded-xl bg-gradient-to-tr from-[#dc0028] via-[#e6002f] to-[#ff4455] flex items-center justify-center shadow-lg shadow-red-600/40">
-                <span className="material-symbols-outlined text-white text-3xl">route</span>
-              </div>
+              <BuildPathLogo size="xl" withGlow={true} className="!w-16 !h-16 shadow-2xl shadow-red-600/50" />
               <div className="absolute -inset-2 border border-[#dc0028]/40 rounded-2xl animate-ping opacity-30 pointer-events-none" />
             </div>
 
