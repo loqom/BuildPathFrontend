@@ -105,3 +105,83 @@
   background: #404040;
 }
 
+/* 3D and Glow Utilities for Auth Experience */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.glow-crimson {
+  box-shadow: 0 0 35px -5px rgba(220, 0, 40, 0.45);
+}
+
+.glow-crimson-subtle {
+  box-shadow: 0 0 20px -3px rgba(220, 0, 40, 0.25);
+}
+
+.border-crimson-glow {
+  border-color: rgba(220, 0, 40, 0.5);
+  box-shadow: 0 0 15px rgba(220, 0, 40, 0.2);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(2deg);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes laser-flow {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-laser {
+  stroke-dasharray: 8, 12;
+  animation: laser-flow 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-subtle,
+  .animate-float-slow,
+  .animate-laser {
+    animation: none !important;
+  }
+}
+

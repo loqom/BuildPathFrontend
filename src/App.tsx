@@ -12,7 +12,7 @@ import { BuildInPublicFeedView } from './components/BuildInPublicFeedView';
 import { TeamsView } from './components/TeamsView';
 import { SavedProjectsView } from './components/SavedProjectsView';
 import { UserProfilePage } from './components/UserProfilePage';
-import { AuthModalView } from './components/AuthModalView';
+import { AuthPageView } from './components/AuthPageView';
 import { Footer } from './components/Footer';
 import { problemService } from './services/problem.service';
 import { teamsService } from './services/teams.service';
@@ -150,10 +150,10 @@ const toUserProfile = (u: any): UserProfile => ({
 });
 
 export default function App() {
+  const [authStatus, setAuthStatus] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
   const [activeTab, setActiveTab] = useState<PageTab>('home');
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-const [matches, setMatches] = useState<Project[]>([]);
+  const [matches, setMatches] = useState<Project[]>([]);
   const [problems, setProblems] = useState<ProblemItem[]>([]);
   const [problemsTotal, setProblemsTotal] = useState(0);
   const [problemPage, setProblemPage] = useState(1);
@@ -183,7 +183,45 @@ const [matches, setMatches] = useState<Project[]>([]);
     }
   }, [userProfile]);
 
+  // Initial Auth Check: determine if session is valid before rendering views
   useEffect(() => {
+    let cancelled = false;
+
+    authService
+      .getMe()
+      .then((res) => {
+        if (cancelled) return;
+        if (res.success && res.data) {
+          const profile = toUserProfile(res.data);
+          setUserProfile(profile);
+          setAuthStatus('authenticated');
+        } else {
+          setUserProfile({ ...DEFAULT_PROFILE, isLoggedIn: false });
+          try {
+            localStorage.removeItem('buildpath_user_profile');
+          } catch {}
+          setAuthStatus('unauthenticated');
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        // session invalid / expired or unauthenticated
+        setUserProfile({ ...DEFAULT_PROFILE, isLoggedIn: false });
+        try {
+          localStorage.removeItem('buildpath_user_profile');
+        } catch {}
+        setAuthStatus('unauthenticated');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Fetch application data only when authenticated
+  useEffect(() => {
+    if (authStatus !== 'authenticated') return;
+
     let cancelled = false;
     (async () => {
       try {
@@ -195,7 +233,7 @@ const [matches, setMatches] = useState<Project[]>([]);
 
         if (cancelled) return;
 
-if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(probRes.value.data)) {
+        if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(probRes.value.data)) {
           const newProblems = probRes.value.data.map(toProblemItem);
           const isFirstPage = problemPage === 1;
           if (isFirstPage) {
@@ -205,7 +243,6 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
           }
           const totalForPage = probRes.value.pagination?.total ?? newProblems.length;
           setProblemsTotal(totalForPage);
-          // Calculate total pages (ceil division)
           setProblemTotalPages(Math.ceil(totalForPage / 30));
         }
 
@@ -224,45 +261,19 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
     return () => {
       cancelled = true;
     };
-  }, [problemPage]);
+  }, [authStatus, problemPage]);
 
   const loadMoreProblems = async () => {
     setProblemPage((prev) => {
       const newPage = prev + 1;
-      if (newPage > problemTotalPages) return prev; // Don't go beyond total pages
+      if (newPage > problemTotalPages) return prev;
       return newPage;
     });
   };
 
+  // Fetch saved projects only when authenticated
   useEffect(() => {
-    let stored: any = null;
-    try {
-      stored = JSON.parse(localStorage.getItem('buildpath_user_profile') || 'null');
-    } catch {
-      return;
-    }
-    if (!stored?.isLoggedIn) return;
-
-    authService
-      .getMe()
-      .then((res) => {
-        if (res.success && res.data) {
-          setUserProfile((prev) => ({ ...prev, ...toUserProfile(res.data) }));
-        }
-      })
-      .catch(() => {
-        // session invalid/expired → reset to anonymous so the auth button opens the login modal
-        setUserProfile((prev) => ({ ...DEFAULT_PROFILE, isLoggedIn: false }));
-        try {
-          localStorage.removeItem('buildpath_user_profile');
-        } catch {
-          // ignore
-        }
-      });
-  }, []);
-
-  useEffect(() => {
-    if (!userProfile.isLoggedIn) {
+    if (authStatus !== 'authenticated' || !userProfile.isLoggedIn) {
       setSavedProjects([]);
       setSavedProjectIds([]);
       return;
@@ -280,28 +291,31 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
         }
       })
       .catch(() => {
-        // requires auth; silently ignore for anonymous/expired sessions
+        // requires auth; ignore
       });
 
     return () => {
       cancelled = true;
     };
-  }, [userProfile.isLoggedIn]);
+  }, [authStatus, userProfile.isLoggedIn]);
 
-  const openAuthModal = () => setIsAuthModalOpen(true);
-  const closeAuthModal = () => setIsAuthModalOpen(false);
-
-  const handleLogout = () => {
-    setUserProfile({ ...DEFAULT_PROFILE, isLoggedIn: false });
+  const handleLogout = async () => {
     try {
-      localStorage.removeItem('buildpath_user_profile');
+      await authService.logout();
     } catch {
-      // ignore
+      // ignore network errors
+    } finally {
+      setUserProfile({ ...DEFAULT_PROFILE, isLoggedIn: false });
+      try {
+        localStorage.removeItem('buildpath_user_profile');
+      } catch {}
+      setSavedProjects([]);
+      setSavedProjectIds([]);
+      setMatches([]);
+      setSelectedProject(null);
+      setActiveTab('home');
+      setAuthStatus('unauthenticated');
     }
-    setSavedProjects([]);
-    setSavedProjectIds([]);
-    setActiveTab('home');
-    setIsAuthModalOpen(true);
   };
 
   const handleSelectProblem = (problem: ProblemItem) => {
@@ -413,13 +427,64 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
     setActiveTab('onboarding');
   };
 
+  const handleAuthSuccess = (user: UserProfile) => {
+    setUserProfile(user);
+    setAuthStatus('authenticated');
+    setActiveTab('home');
+  };
+
+  // 1. INITIAL AUTH LOADING STATE: Minimal premium BuildPath splash to prevent any flash
+  if (authStatus === 'loading') {
+    return (
+      <div className="min-h-screen bg-[#070708] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
+        <div className="absolute inset-0 pointer-events-none opacity-20"
+          style={{
+            backgroundImage: 'radial-gradient(circle at center, rgba(220, 0, 40, 0.25) 0%, transparent 70%)',
+          }}
+        />
+        <div className="relative z-10 flex flex-col items-center text-center space-y-5">
+          <div className="relative">
+            <div className="flex h-14 w-14 items-center justify-center bg-[#dc0028] text-white font-black text-xl tracking-wider rounded-2xl shadow-xl shadow-red-900/50">
+              BP
+            </div>
+            <div className="absolute -inset-2 border border-[#dc0028]/40 rounded-3xl animate-ping opacity-40 pointer-events-none" />
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-sm font-black tracking-widest uppercase font-mono">
+              BUILDPATH <span className="text-[#dc0028]">/ ENGINE</span>
+            </div>
+            <p className="text-[11px] font-mono text-white/40 uppercase tracking-wider">
+              Verifying developer session...
+            </p>
+          </div>
+
+          <div className="w-36 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-[#dc0028] rounded-full animate-pulse w-2/3" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. UNAUTHENTICATED: Full-page authentication experience
+  if (authStatus === 'unauthenticated') {
+    return (
+      <AuthPageView
+        userProfile={userProfile}
+        setUserProfile={setUserProfile}
+        onAuthSuccess={handleAuthSuccess}
+      />
+    );
+  }
+
+  // 3. AUTHENTICATED: Full application views and navigation
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         userProfile={userProfile}
-        openAuthModal={openAuthModal}
         problemsCount={problemsTotal || problems.length}
         matchesCount={matches.length}
         hasMatches={matches.length > 0}
@@ -439,7 +504,6 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
             userProfile={userProfile}
             setUserProfile={setUserProfile}
             onStartPipeline={onStartPipeline}
-            openAuthModal={openAuthModal}
           />
         )}
 
@@ -457,7 +521,6 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
               userProfile={userProfile}
               setUserProfile={setUserProfile}
               onStartPipeline={onStartPipeline}
-              openAuthModal={openAuthModal}
             />
           )
         )}
@@ -530,37 +593,11 @@ if (probRes.status === 'fulfilled' && probRes.value?.success && Array.isArray(pr
         )}
 
         {activeTab === 'profile' && (
-          userProfile.isLoggedIn ? (
-            <UserProfilePage setActiveTab={setActiveTab} onLogout={handleLogout} />
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-              <h2 className="text-xl font-bold tracking-wider uppercase mb-2">Authentication Required</h2>
-              <p className="text-white/60 text-sm mb-6 max-w-md">
-                You must be logged in to view and manage your developer profile.
-              </p>
-              <button
-                onClick={() => {
-                  setActiveTab('home');
-                  setIsAuthModalOpen(true);
-                }}
-                className="bg-[#dc0028] text-white px-6 py-2.5 text-xs font-black tracking-[0.2em] uppercase hover:bg-red-700 transition rounded-full"
-              >
-                Sign In to BuildPath
-              </button>
-            </div>
-          )
+          <UserProfilePage setActiveTab={setActiveTab} onLogout={handleLogout} />
         )}
       </main>
 
       <Footer setActiveTab={setActiveTab} />
-
-      <AuthModalView
-        isOpen={isAuthModalOpen}
-        onClose={closeAuthModal}
-        userProfile={userProfile}
-        setUserProfile={setUserProfile}
-        onAuthSuccess={(user) => setUserProfile(user)}
-      />
     </div>
   );
 }

@@ -5,7 +5,7 @@ interface NavbarProps {
   activeTab: PageTab;
   setActiveTab: (tab: PageTab) => void;
   userProfile: UserProfile;
-  openAuthModal: () => void;
+  openAuthModal?: () => void;
   problemsCount?: number;
 }
 
