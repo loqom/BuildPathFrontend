@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#ff4455" />
+      <stop offset="100%" stopColor="#dc0028" />
+    </linearGradient>
+  </defs>
+  <!-- Background rounded rect -->
+  <rect width="32" height="32" rx="7" fill="#0a0a0c" />
+  <rect width="32" height="32" rx="7" fill="none" stroke="#dc0028" stroke-width="1.2" stroke-opacity="0.5" />
+  
+  <!-- Outer subtle geometric polygon -->
+  <polygon
+    points="16,4 27,9.5 27,22.5 16,28 5,22.5 5,9.5"
+    stroke="#dc0028"
+    stroke-width="1"
+    stroke-opacity="0.4"
+    fill="#dc0028"
+    fill-opacity="0.08"
+  />
+
+  <!-- Chevron Pipeline Path -->
+  <path
+    d="M9 20 L14 15 L9 10"
+    stroke="#ffffff"
+    stroke-opacity="0.5"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Central Geometric 'B' + 'P' Intersecting Path Core -->
+  <path
+    d="M14 8.5 L21.5 8.5 C23.5 8.5 24.8 9.7 24.8 11.5 C24.8 13.3 23.5 14.5 21.5 14.5 L14 14.5 Z"
+    fill="url(#bpGrad)"
+  />
+  <path
+    d="M14 14.5 L14 23.5"
+    stroke="url(#bpGrad)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+  />
+
+  <!-- Forward Innovation Node -->
+  <circle cx="21" cy="20" r="2" fill="#ffffff" />
+  <line
+    x1="14"
+    y1="16.5"
+    x2="19.5"
+    y2="19.5"
+    stroke="#ffffff"
+    stroke-opacity="0.7"
+    stroke-width="1.2"
+    stroke-dasharray="2 2"
+  />
+</svg>
