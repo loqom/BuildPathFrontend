@@ -41,9 +41,22 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <p className="text-xs text-white/60 leading-relaxed mb-4">
               Scrape, match, and orchestrate real engineering projects based on your tech stack and growth goals.
             </p>
-            <div className="flex items-center gap-2 text-[10px] text-emerald-400 font-mono uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-[10px] text-emerald-400 font-mono uppercase tracking-wider mb-4">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               ALL SCRAPER AGENTS OPERATIONAL
+            </div>
+            <div>
+              <button
+                id="footer-brand-about-btn"
+                onClick={() => {
+                  setActiveTab('about');
+                  window.scrollTo(0, 0);
+                }}
+                className="inline-flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-white/70 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded border border-white/10 hover:border-[#dc0028]/50 transition cursor-pointer"
+              >
+                <span>About BuildPath</span>
+                <span className="text-[#dc0028]">→</span>
+              </button>
             </div>
           </div>
 

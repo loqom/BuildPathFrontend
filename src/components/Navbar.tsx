@@ -53,18 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Center Nav Items */}
         <nav className="hidden md:flex items-center gap-6 text-[10px] font-bold tracking-[0.2em] uppercase">
           <button
-            id="nav-about-btn"
-            onClick={() => setActiveTab('about')}
-            className={`transition py-1 border-b-2 ${
-              activeTab === 'about'
-                ? 'text-white border-[#dc0028] opacity-100'
-                : 'text-white/60 border-transparent hover:text-white'
-            }`}
-          >
-            About
-          </button>
-
-          <button
             id="nav-explore-btn"
             onClick={() => setActiveTab('explore')}
             className={`transition py-1 border-b-2 ${
@@ -172,12 +160,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Sub-Navigation Bar */}
       <div className="flex md:hidden overflow-x-auto border-t border-white/10 bg-[#0a0a0a] px-3 py-2 no-scrollbar text-[10px] font-bold tracking-[0.15em] uppercase">
         <div className="flex items-center gap-4 min-w-max">
-          <button
-            onClick={() => setActiveTab('about')}
-            className={`py-1 ${activeTab === 'about' ? 'text-[#dc0028] border-b border-[#dc0028]' : 'text-white/60'}`}
-          >
-            About
-          </button>
           <button
             onClick={() => setActiveTab('explore')}
             className={`py-1 ${activeTab === 'explore' ? 'text-[#dc0028] border-b border-[#dc0028]' : 'text-white/60'}`}
